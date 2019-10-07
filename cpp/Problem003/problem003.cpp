@@ -16,16 +16,16 @@ int main() {
 
     unsigned long max_prime_factor = 1;
     unsigned long factor = 2;
-    unsigned long toFactor = TO_FACTORIZE;
+    unsigned long to_factor = TO_FACTORIZE;
 
 
-    auto upperLimit = (unsigned long)sqrt(toFactor); // All non-trivial factors of N are less than or equal to sqrt(N)
+    auto upper_limit = (unsigned long)sqrt(to_factor); // All non-trivial factors of N are less than or equal to sqrt(N)
 
-    while (factor <= upperLimit) {
-        if (toFactor % factor == 0) {
-            toFactor = toFactor / factor;
+    while (factor <= upper_limit) {
+        if (to_factor % factor == 0) {
+            to_factor = to_factor / factor;
             max_prime_factor = factor;
-            upperLimit = (unsigned long)sqrt(toFactor);
+            upper_limit = (unsigned long)sqrt(to_factor);
 //            std::cout <<  factor << " ";
             continue;
         }
@@ -37,6 +37,6 @@ int main() {
         }
     }
 
-    std::cout <<  std::max(toFactor, max_prime_factor) << std::endl;
+    std::cout <<  std::max(to_factor, max_prime_factor) << std::endl;
     return 0;
 }
