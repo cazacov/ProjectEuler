@@ -72,8 +72,8 @@ int main() {
 
         // Calculate the product of elements in the queue
         long current_product = 1;
-        for (auto it = adjacent_digits.begin(); it != adjacent_digits.end(); ++it) {
-            current_product *= *it;
+        for (int & adjacent_digit : adjacent_digits) {
+            current_product *= adjacent_digit;
         }
 
         // Find max
