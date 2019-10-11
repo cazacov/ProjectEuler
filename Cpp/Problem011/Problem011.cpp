@@ -32,8 +32,6 @@
 #include <iostream>
 #include <vector>
 #include <sstream>
-#include <stdio.h>
-#include <unistd.h>
 
 std::vector<std::vector<int>> read_grid();
 
@@ -44,6 +42,45 @@ int main() {
     int grid_rows = grid.size();
     int grid_columns = grid[0].size();
 
+    int largest_product = 0;  // The product can have we have up to 4x2 = 8 decimal digits, so 32-bit int should be Ok
+
+    // vertical groups
+    for (int i = 0; i < grid_rows - GROUP_SIZE; i++) {
+        for (int j = 0; j < grid_columns; j++) {
+            int product = grid[i][j] * grid[i+1][j] * grid[i+2][j] * grid[i+3][j];
+            if (product > largest_product) {
+                largest_product = product;
+            }
+        }
+    }
+
+    // horizontal groups
+    for (int i = 0; i < grid_rows; i++) {
+        for (int j = 0; j < grid_columns- GROUP_SIZE; j++) {
+            int product = grid[i][j] * grid[i][j+1] * grid[i][j+2] * grid[i][j+3];
+            if (product > largest_product) {
+                largest_product = product;
+            }
+        }
+    }
+
+    // diagonals
+    for (int i = 0; i < grid_rows - GROUP_SIZE; i++) {
+        for (int j = 0; j < grid_columns- GROUP_SIZE; j++) {
+            // diagonal upleft - bottomright
+            int product1 = grid[i][j] * grid[i+1][j+1] * grid[i+2][j+2] * grid[i+3][j+3];
+            if (product1 > largest_product) {
+                largest_product = product1;
+            }
+
+            // diagonal upright - bottomleft
+            int product2 = grid[i][j+3] * grid[i+1][j+2] * grid[i+2][j+1] * grid[i+3][j];
+            if (product2 > largest_product) {
+                largest_product = product2;
+            }
+        }
+    }
+    std::cout << largest_product << std::endl;
 }
 
 std::vector<std::vector<int>> read_grid() {
