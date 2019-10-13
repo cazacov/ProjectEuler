@@ -4,7 +4,6 @@
 
 #include "PrimePool.h"
 
-// Number of prime d
 const int FACTOR_COUNT = 100;
 
 std::vector<int> factorize(int n, std::vector<int> &pool) {
