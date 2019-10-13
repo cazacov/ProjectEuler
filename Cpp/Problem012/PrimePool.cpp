@@ -14,8 +14,6 @@ PrimePool::PrimePool(int pool_length) {
     int n = pool_length * log(pool_length);
     n *= 2; // to be absolutely sure
 
-
-
     std::vector<bool> is_prime(n, true);
 
     for (int i = 2; i < n;  i++) {
@@ -29,8 +27,7 @@ PrimePool::PrimePool(int pool_length) {
     }
 
     this->primes.clear();
-    for (int i = 2; i < n && primes.size() < pool_length; i++)
-    {
+    for (int i = 2; i < n && primes.size() < pool_length; i++) {
         if (is_prime[i]) {
             this->primes.push_back(i);
         }
