@@ -8,11 +8,12 @@
 #include <string>
 
 class NumberSpeller {
+private:
+    std::string convert_1to20(int n) const;
+    std::string convert_tens(int n) const;
+    std::string convert_hundreds(int n) const;
 public:
-    std::string NumberToText(int n) const;
-    std::string convert1to20(int n) const;
-    std::string convertTens(int n) const;
-    std::string convertHundreds(int n) const;
+    std::string number_to_text(int n) const;
 };
 
 

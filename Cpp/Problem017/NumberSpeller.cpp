@@ -4,26 +4,34 @@
 
 #include "NumberSpeller.h"
 
-std::string NumberSpeller::NumberToText(int n) const {
+std::string NumberSpeller::number_to_text(int n) const {
 
     std::string result;
     if (n < 20) {
-        result = convert1to20(n);
+        result = convert_1to20(n);
     }
     else if (n < 100)
     {
-        result = convertTens((n / 10)*10);
+        result = convert_tens((n / 10) * 10);
         if (n % 10)
         {
-            result += "-" + NumberToText(n % 10);
+            result += "-" + number_to_text(n % 10);
         }
     }
     else if (n < 1000)
     {
-        result = convertHundreds((n / 100)*100);
+        result = convert_hundreds((n / 100) * 100);
         if ( n % 100)
         {
-            result + " and " + NumberToText(n % 100);
+            result += " and " + number_to_text(n % 100);
+        }
+    }
+    else if (n < 1000000)
+    {
+        result = number_to_text(n / 1000) + " thousand";
+        if ( n % 1000)
+        {
+            result += " " + number_to_text(n % 1000);
         }
     }
     else {
@@ -32,7 +40,7 @@ std::string NumberSpeller::NumberToText(int n) const {
     return result;
 }
 
-std::string NumberSpeller::convert1to20(int n) const {
+std::string NumberSpeller::convert_1to20(int n) const {
     switch (n) {
         case 1:
             return "one";
@@ -77,7 +85,7 @@ std::string NumberSpeller::convert1to20(int n) const {
     }
 }
 
-std::string NumberSpeller::convertTens(int n) const {
+std::string NumberSpeller::convert_tens(int n) const {
     switch (n)
     {
         case 20:
@@ -100,7 +108,7 @@ std::string NumberSpeller::convertTens(int n) const {
     }
 }
 
-std::string NumberSpeller::convertHundreds(int n) const {
+std::string NumberSpeller::convert_hundreds(int n) const {
     auto hundreds = n / 100;
-    return NumberToText(hundreds) + " hundred";
+    return number_to_text(hundreds) + " hundred";
 }
