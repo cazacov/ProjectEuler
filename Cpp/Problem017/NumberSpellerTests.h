@@ -1,0 +1,13 @@
+//
+// Created by Victor on 15.10.2019.
+//
+
+#ifndef PROBLEM017_NUMBERSPELLERTESTS_H
+#define PROBLEM017_NUMBERSPELLERTESTS_H
+
+class NumberSpellerTests {
+
+};
+
+
+#endif //PROBLEM017_NUMBERSPELLERTESTS_H
