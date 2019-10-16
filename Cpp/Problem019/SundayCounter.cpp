@@ -20,7 +20,7 @@ void SundayCounter::add_one_week() {
     }
 }
 
-int SundayCounter::month_length(int m, int y) {
+int SundayCounter::month_length(int m, int y) const {
     switch (m) {
         case 9:
         case 4:
@@ -31,7 +31,7 @@ int SundayCounter::month_length(int m, int y) {
             return 30;
         case 2:
             // A leap year occurs on any year evenly divisible by 4, but not on a century unless it is divisible by 400.
-            if (y % 4 != 0 || (y % 100 == 0 && y % 400 != 0)) {
+            if (!is_leap(y)) {
                 /* Saving February alone, Which has twenty-eight, rain or shine. */
                 return 28;
             } else {
@@ -41,4 +41,17 @@ int SundayCounter::month_length(int m, int y) {
             /* All the rest have thirty-one, */
             return 31;
     }
+}
+
+bool SundayCounter::is_leap(int y) const {
+
+    if (y % 400 == 0)
+    {
+        return true;
+    }
+    if (y % 100 == 0)
+    {
+        return false;
+    }
+    return y % 4 == 0;
 }

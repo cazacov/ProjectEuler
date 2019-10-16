@@ -23,12 +23,15 @@ int main() {
 
     int first_sundays = 0;
 
-    while (sundayCounter.get_year() < 2001) // count to 31 Dec 2000
-    {
+    while (sundayCounter.get_year() < 2001) { // count to 31 Dec 2000
+
         sundayCounter.add_one_week();
-        if (sundayCounter.get_year() >= 1901    // ignore Sundays before from 1 Jan 1901
-            && sundayCounter.get_day() == 1)    // Sundays falls on the first of the month
-        {
+
+        if (sundayCounter.get_year() < 1901) { // ignore Sundays before from 1 Jan 1901
+            continue;
+        }
+
+        if (sundayCounter.get_day() == 1) { // Sundays falls on the first of the month
             first_sundays++;
         }
     }

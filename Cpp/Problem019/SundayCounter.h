@@ -11,7 +11,8 @@ private:
     int year;
     int month;
     int day;
-    int month_length(int month, int year);
+    int month_length(int month, int year) const;
+    bool is_leap(int y) const;
 public:
     SundayCounter() : year(1900), month(1), day(7) {}  // 7 Jan 1900 was a Sunday.
 // getters
