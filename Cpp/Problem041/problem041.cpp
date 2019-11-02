@@ -19,48 +19,47 @@ int main() {
     // There are not so many pandigital primes, so let's start with the biggest one 987654321 and go down,
     // until we find a prime one
 
-    std::vector<int> digits = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    // 9 and 8 digit pandigital numbers cannot be primes because they all are divisible by 3
+
+    std::vector<int> digits = {7, 6, 5, 4, 3, 2, 1};
 
     do {
-        if (digits[0] & 1) { // Check odd candidates only
+        if (digits[6] & 1) { // Check odd candidates only
             int n = 0;
-            for (int i = 8; i >= 0; i--) {
+            for (const int &digit: digits) {
                 n *= 10;
-                n += digits[i];
+                n += digit;
             }
 
             if (is_prime(n)) {
-                std::cout << n << " is a biggest pandigital prime number" << std::endl;
+                std::cout << n << " is the biggest pandigital prime number" << std::endl;
                 break;
             }
             std::cout << n << std::endl;
         }
 
         // calculate next permutatation
-        int pos = 8;
-        while (digits[pos] > digits[pos+1]) {
+        int pos = 5;
+        while (digits[pos] < digits[pos+1]) {
             pos--;
         }
 
         // find first from the end that is greater than element in position pos
-        int pos2 = 9;
-        while (digits[pos2] < digits[pos]) {
+        int pos2 = 6;
+        while (digits[pos2] > digits[pos]) {
             pos2--;
         }
 
         // swap elements
-        auto tmp = digits[pos2];
-        digits[pos2] = digits[pos];
-        digits[pos] = tmp;
-
+        std::swap(digits[pos2], digits[pos]);
         // sort remaining elements
-        std::sort(digits.begin() + pos + 1, digits.end());
+        std::sort(digits.begin() + pos + 1, digits.end(), std::greater<>());
     } while(true);
     return 0;
 }
 
 bool is_prime(int n) {
-    static PrimesInRange pool(31427); // sqrt(987654321)
+    static PrimesInRange pool(2767); // sqrt(7654321)
 
     for (const int &p : pool.primes) {
         if (p*p > n) {
