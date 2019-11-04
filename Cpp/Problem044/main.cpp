@@ -10,47 +10,56 @@
  */
 
 #include <iostream>
-#include <tgmath.h>
 #include <map>
 
-bool is_pentagon(int n)
+const int N = 400000;
+
+std::map<long, int > cache;
+
+
+int is_pentagon(const long number)
 {
-    static std::map<int, bool> cache;
-
-    if (cache.count(n))
-    {
-        return cache[n];
+    if (number > (long)N*(N*3-1)) {
+        std::cout << "The cache is too small";
+        exit(-1);
     }
 
-    bool result = true;
-    auto disk = n*12+1;
-    auto sq = int(sqrt(disk+1));
-    if (sq*sq != disk) {
-        result = false;
+    if (cache.count(number)) {
+        return cache[number];
     }
-
-    result = result && (((sq + 1) % 6) == 0);
-    cache[n] = result;
-    return result;
+    else {
+        cache[number] = 0;
+    }
+    return 0;
 }
 
 int main() {
 
-    auto n = 1;
+    // Fill the cache
+    for (int i = 1; i < N; i++) {
+        cache[(long)i*(3*i - 1)] = i;
+    }
+
+    long n = 1;
     do {
-        auto dif = n*(3*n -1);
-        for (int m = 1; m <= (dif - 2) / 6; m++)
+        long dif = n*(3*n -1);
+        for (long m = 1; m <= (dif - 2) / 6; m++)
         {
-            auto p1 = m * (3*m - 1);
-            auto p2 = p1 + dif;
-            if (!is_pentagon(p2)) {
+            long p1 = m * (3*m - 1);
+            long p2 = p1 + dif;
+
+            auto pos2 = is_pentagon(p2);
+            if (!pos2) {
                 continue;
             }
-            if (!is_pentagon(p1+p2)) {
+
+            auto pos_sum = is_pentagon(p1 + p2);
+            if (!pos_sum) {
                 continue;
             }
-            std::cout << p1 << " (p" << m <<  ") + " << dif << "(p" << n << ") = " << p2 << std::endl;
-            std::cout << p1 << " (p" << m <<  ") +" << p2 << " = " << p1+p2 << std::endl;
+
+            std::cout << p1 << " (p" << m <<  ") + " << dif << "(p" << n << ") = " << p2 << " (p" << pos2 << ")" << std::endl;
+            std::cout << p1 << " (p" << m <<  ") +" << p2  << " (p" << pos2 << ") = " << p1+p2 <<  " (p" << pos_sum << ")" << std::endl;
             return 0;
         }
         n++;
