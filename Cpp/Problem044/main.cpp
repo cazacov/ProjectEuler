@@ -10,58 +10,95 @@
  */
 
 #include <iostream>
-#include <map>
+#include <cmath>
+#include <climits>
 
 const int N = 400000;
 
-std::map<long, int > cache;
+bool is_perfect_square(const long number)
+{
+    // Based on ideas from https://www.urbanpro.com/class-ix-x-tuition/fastest-way-how-to-check-if-a-number-is-a
+
+    auto last_digit = number % 10;
+
+    if (last_digit == 2 || last_digit == 3 || last_digit == 7 || last_digit == 8) {
+        return false;
+    }
+
+    auto tens_digit = (number / 10) % 100;
+
+    if (last_digit == 0 && tens_digit != 0) {
+        return false;
+    }
+    if (last_digit == 5 && tens_digit != 2) {
+        return false;
+    }
+    if (last_digit == 6 && !(tens_digit & 0x01)) {    //tens must be odd
+        return false;
+    }
+    if ((last_digit == 1 || last_digit == 4 || last_digit == 9) && tens_digit & 0x01) {// tens must be event
+        return false;
+    }
+
+    long sq = lround(sqrt(number));
+    return sq*sq == number;
+}
 
 
 int is_pentagon(const long number)
 {
-    if (number > (long)N*(N*3-1)) {
-        std::cout << "The cache is too small";
-        exit(-1);
+    auto test = number * 12 + 1;
+    if (!is_perfect_square(test)) {
+        return false;
     }
-
-    if (cache.count(number)) {
-        return cache[number];
-    }
-    else {
-        cache[number] = 0;
-    }
-    return 0;
+    return lround(sqrt(test)) % 6 == 5;
 }
 
 int main() {
 
-    // Fill the cache
-    for (int i = 1; i < N; i++) {
-        cache[(long)i*(3*i - 1)] = i;
-    }
+    long min_d = LONG_MAX;
+    long min_p1 = 0;
+    long min_p2 = 0;
 
-    long n = 1;
+    long j = 2;
     do {
-        long dif = n*(3*n -1);
-        for (long m = 1; m <= (dif - 2) / 6; m++)
-        {
-            long p1 = m * (3*m - 1);
-            long p2 = p1 + dif;
+        long pj = 3*j*j - j;
 
-            auto pos2 = is_pentagon(p2);
-            if (!pos2) {
-                continue;
+        double lower_limit = 1;
+        if (min_d < LONG_MAX) { // We have already found at least one D
+
+            // Pj - Pk cannot be less than D
+            // We can estimate lower limit of k knowing that Pk must be greater than (Pj - D)
+            lower_limit = (sqrt((pj - min_d) *  12 + 1)  + 1)/ 6;
+            if (lower_limit > j -1) { // The gap between Pk and Pj is smaller than D
+                // Smaller D cannot exist. Break the search.
+                break;
             }
-
-            auto pos_sum = is_pentagon(p1 + p2);
-            if (!pos_sum) {
-                continue;
-            }
-
-            std::cout << p1 << " (p" << m <<  ") + " << dif << "(p" << n << ") = " << p2 << " (p" << pos2 << ")" << std::endl;
-            std::cout << p1 << " (p" << m <<  ") +" << p2  << " (p" << pos2 << ") = " << p1+p2 <<  " (p" << pos_sum << ")" << std::endl;
-            return 0;
         }
-        n++;
+
+        for (long k = (int)lower_limit; k < j; k++) {
+            long pk = 3*k*k - k;
+
+            auto sum = pj + pk;
+            if (!is_pentagon(sum)) {
+                continue;
+            }
+
+            auto dif = pj - pk;
+            if (!is_pentagon(dif)) {
+                continue;
+            }
+
+            if (dif < min_d) {
+                min_d = dif;
+                min_p1 = pk;
+                min_p2 = pj;
+                std::cout << min_p1 / 2 << " (P" << k << ") + " << min_p2 / 2 << " (P" << j << ") = " << sum / 2 << std:: endl;
+                std::cout << min_p2 / 2 << " (P" << j << ") - " << min_p1 / 2 << " (P" << k << ") = " << min_d / 2 << std:: endl;
+            }
+        }
+        j++;
     } while (true);
+
+    std::cout << "Answer: " << min_d  / 2 << std:: endl;
 }
