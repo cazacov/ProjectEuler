@@ -17,25 +17,30 @@
 #include <math.h>
 #include "PrimesInRange.h"
 
-bool is_perfect_square(const long number);
+bool is_perfect_square(long number);
 
 int main() {
-    const int N = 1000000;
+    const int N = 10000;
     PrimesInRange primes(N);
 
     primes.primes.insert(1);
 
-    for(int i = 15; i < N; i+= 2)    {
+    for(int i = 3; i < N; i+= 2)    {
         if (primes.primes.count(i)) {
             continue;
         }
-
-        for (const int &j : primes.primes) {
-            if (j >= i) {
+        for (const int &prime : primes.primes) {
+            if (prime >= i) {
                 std::cout << i << std::endl;
                 exit(0);
             }
-            if (is_perfect_square(i * j / 2)) {
+            int remainder = i - prime;
+            if (remainder & 0x01) {
+                continue;
+            }
+            remainder /= 2;
+
+            if (is_perfect_square(remainder)) {
                 break;
             }
         }
@@ -46,6 +51,11 @@ int main() {
 
 bool is_perfect_square(const long number)
 {
+
+    if (number == 1 || number == 4 || number == 9)  {
+        return true;
+    }
+
     // Based on ideas from https://www.urbanpro.com/class-ix-x-tuition/fastest-way-how-to-check-if-a-number-is-a
 
     auto last_digit = number % 10;
@@ -54,7 +64,7 @@ bool is_perfect_square(const long number)
         return false;
     }
 
-    auto tens_digit = (number / 10) % 100;
+    auto tens_digit = (number / 10) % 10;
 
     if (last_digit == 0 && tens_digit != 0) {
         return false;
