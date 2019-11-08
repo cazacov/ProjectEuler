@@ -20,7 +20,7 @@
 bool is_perfect_square(long number);
 
 int main() {
-    const int N = 10000;
+    const int N = 1000000;
     PrimesInRange primes(N);
 
     primes.primes.insert(1);
