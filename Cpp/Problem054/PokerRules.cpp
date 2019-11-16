@@ -19,14 +19,12 @@ enum Rank {
     RoyalFlush
 };
 
-
-
 struct Card {
     short score;
     char suit;
+
     Card(std::string card) {
         suit = card[1];
-
         switch (card[0]) {
             case 'T':
                 score = 10;
@@ -48,28 +46,32 @@ struct Card {
         }
     }
 };
+
 struct RankResult {
     Rank rank;
-    short rank_value;
+    short rank_value{};
     std::vector<Card> cards;
+    RankResult() : rank {HighCard}, rank_value {0} {
+    }
 };
 
 
 RankResult calculate_rank(std::vector<std::string> hand) {
 
     RankResult result;
-    result.rank = HighCard;
-    result.rank_value = 0;
 
     std::map<int, int> score_map;
     for (int i = 0; i <= 14; i++) {
         score_map[i] = 0;
     }
 
+    // Count number of cards of each value
     for (Card card : hand) {
         result.cards.push_back(card);
         score_map[card.score] += 1;
     }
+
+    // Sort cards descending
     std::sort(result.cards.begin(), result.cards.end(), [](const Card &lhs, const Card &rhs) {
         return lhs.score > rhs.score;
     });
@@ -106,21 +108,22 @@ RankResult calculate_rank(std::vector<std::string> hand) {
 
     if (result.rank < TwoPairs) {
         if (std::count_if(score_map.begin(), score_map.end(), [](const auto &score) {
-            return score.second == 2;
+            return score.second == 2;   // Count the pairs
         }) == 2) {
             result.rank = TwoPairs;
         }
     }
 
     if (result.rank < Straight) {
-        int sc = result.cards[0].score;
-        int i;
-        for (i = 0; i < 5; i++) {
-            if (result.cards[i].score != sc--) {
-                break;
-            }
+        int score = result.cards[0].score;
+        int pos = 0;
+
+        while(pos < 5 && result.cards[pos].score == score) {
+            pos++;
+            score--;
         }
-        if (i == 5) {
+
+        if (pos == 5) {
             result.rank = Straight;
             result.rank_value = result.cards[0].score;
         }
@@ -134,7 +137,7 @@ RankResult calculate_rank(std::vector<std::string> hand) {
             if (result.rank == Straight) {
                 result.rank = StraightFlush;
             }
-            else if (result.rank < Flush){
+            else if (result.rank < Flush) {
                 result.rank = Flush;
                 result.rank_value = result.cards[0].score;
             }
@@ -166,5 +169,5 @@ bool PokerRules::is_first_winner(const std::vector<std::string> &hand1, const st
             }
         }
     }
-    return true;
+    return false;   // Hands match exactly have different suits. Player 1 is not a winner
 }
