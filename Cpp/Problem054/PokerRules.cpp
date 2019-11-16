@@ -60,7 +60,7 @@ RankResult calculate_rank(std::vector<std::string> hand) {
     result.rank = HighCard;
 
     std::map<int, int> score_map;
-    for (int i = 2; i <= 14; i++) {
+    for (int i = 0; i <= 14; i++) {
         score_map[i] = 0;
     }
 
@@ -76,13 +76,17 @@ RankResult calculate_rank(std::vector<std::string> hand) {
     bool hasThree = false;
 
     for (auto &score: score_map) {
-        if (score.second == 2 && result.rank < OnePair) {
-            result.rank = OnePair;
+        if (score.second == 2) {
             hasTwo = true;
+            if (result.rank < OnePair) {
+                result.rank = OnePair;
+            }
         }
-        if (score.second == 3 && result.rank < ThreeOfAKind) {
-            result.rank = ThreeOfAKind;
+        if (score.second == 3) {
             hasThree = true;
+            if (result.rank < ThreeOfAKind) {
+                result.rank = ThreeOfAKind;
+            }
         }
         if (score.second == 4 && result.rank < FourOfAKind) {
             result.rank = FourOfAKind;
@@ -105,7 +109,7 @@ RankResult calculate_rank(std::vector<std::string> hand) {
                 break;
             }
         }
-        if (sc == 5) {
+        if (i == 5) {
             result.rank = Straight;
         }
     }
@@ -118,7 +122,7 @@ RankResult calculate_rank(std::vector<std::string> hand) {
             if (result.rank == Straight) {
                 result.rank = StraightFlush;
             }
-            else {
+            else if (result.rank < Flush){
                 result.rank = Flush;
             }
         }
