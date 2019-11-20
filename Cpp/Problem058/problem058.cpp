@@ -22,23 +22,22 @@ int main() {
     DiagonalGenerator generator;
     PrimesInRange prime_pool(1000000);
 
-    const int N = 7;
-
-    int numbers = 1;
+    int numbers = 1;    // include 1 in the center of spiral
     int primes = 0;
 
     int side_length=1;
     while (true)
     {
+        // One turn of the spiral
         for (int j = 0; j < 4; j++) {
-            long value = generator++;
+            long diagonal_value = generator++;
             numbers++;
-            if (prime_pool.is_prime(value)) {
+            if (prime_pool.is_prime(diagonal_value)) {
                 primes++;
             }
         }
         side_length+= 2;
-        if (primes*10 < numbers)
+        if (primes*10 < numbers)    // primes/numbers ratio falls below 10%
         {
             break;
         }
