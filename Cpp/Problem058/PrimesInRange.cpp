@@ -3,8 +3,12 @@
 //
 
 #include "PrimesInRange.h"
+#include <stdexcept>
+#include <cmath>
 
 PrimesInRange::PrimesInRange(int upper_limit) {
+
+    this->range = upper_limit;
     // Sieve of Eratosthenes algorithm
 
     // Estimate the value of the biggest number as p(n) ~ n*log(n)
@@ -26,4 +30,21 @@ PrimesInRange::PrimesInRange(int upper_limit) {
             this->primes.insert(i);
         }
     }
+}
+
+bool PrimesInRange::is_prime(long n) {
+    int lim = (int)(sqrt(n) + 1);
+    if (lim > range) {
+        throw std::runtime_error("Not in range");
+    }
+    for (const int prime : this->primes)
+    {
+        if (prime > lim) {
+            return true;
+        }
+        if (n % prime == 0) {
+            return false;
+        }
+    }
+    return true;
 }

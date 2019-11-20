@@ -9,9 +9,12 @@
 #include <set>
 
 class PrimesInRange {
+private:
+    int range;
 public:
     std::set<int> primes;
     explicit PrimesInRange(int n);
+    bool is_prime(long n);
 };
 
 

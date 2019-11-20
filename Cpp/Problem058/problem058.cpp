@@ -15,18 +15,33 @@
 
 #include <iostream>
 #include "DiagonalGenerator.h"
+#include "PrimesInRange.h"
 
 int main() {
 
     DiagonalGenerator generator;
+    PrimesInRange prime_pool(1000000);
 
     const int N = 7;
 
-    for (int i = 1; i < N; i++) {
-        generator++;
-        std::cout << *generator << std::endl;
-        generator++;
-        std::cout << *generator << std::endl;
+    int numbers = 1;
+    int primes = 0;
+
+    int side_length=1;
+    while (true)
+    {
+        for (int j = 0; j < 4; j++) {
+            long value = generator++;
+            numbers++;
+            if (prime_pool.is_prime(value)) {
+                primes++;
+            }
+        }
+        side_length+= 2;
+        if (primes*10 < numbers)
+        {
+            break;
+        }
     }
-    return 0;
+    std::cout << side_length << std::endl;
 }
