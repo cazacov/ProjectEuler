@@ -31,26 +31,47 @@
 #include <sstream>
 #include <numeric>
 
-std::vector<unsigned short> decode(const std::vector<u_int8_t> &data, const std::vector<u_int8_t> key);
+void decode(const std::vector<u_int8_t> &data, const std::vector<u_int8_t> &key, std::vector<u_int8_t> &result);
 std::vector<u_int8_t> read_data(const char *file_name);
+
+bool is_english_text(const std::vector<u_int8_t> &data, int pos, int step);
 
 
 int main() {
 
     auto data = read_data("cipher.txt");
     std::vector<u_int8_t> key(3, 0);
+    std::vector<u_int8_t> decrypted(data.size());
 
+    for (int i = 0; i < key.size(); i++) {
+        do {
+            decode(data, key, decrypted);
+            if (is_english_text(decrypted, i, key.size())) {
+                break;
+            }
+            if (key[i] == 255) {
+                std::cout << "Cannot break the cipher.";
+                exit(0);
+            }
+            key[i]++;
+        } while(key[i] != 0);
+    }
 
+    std::string result;
+    int ascii_sum = 0;
 
+    for (auto ch : decrypted) {
+        ascii_sum += ch;
+        result += char(ch);
+    }
+    std::cout << "Decrypted text:" << result << std::endl;
+    std::cout << "Answer:" << ascii_sum << std::endl;
 
-    std::cout << "Hello, World!" << std::endl;
     return 0;
 }
 
 
-std::vector<unsigned short> decode(const std::vector<u_int8_t> &data, const std::vector<u_int8_t> &key) {
-    std::vector<unsigned short> result(data.size());
-
+void decode(const std::vector<u_int8_t> &data, const std::vector<u_int8_t> &key, std::vector<u_int8_t> &result) {
     auto key_pos = 0;
     auto res = result.begin();
     for (auto elem: data ) {
@@ -60,7 +81,6 @@ std::vector<unsigned short> decode(const std::vector<u_int8_t> &data, const std:
             key_pos = 0;
         }
     }
-    return result;
 }
 
 std::vector<u_int8_t> read_data(const char *file_name) {
@@ -78,6 +98,63 @@ std::vector<u_int8_t> read_data(const char *file_name) {
         }
     }
     return result;
+}
+
+bool is_english_text(const std::vector<u_int8_t> &data, int pos, int step) {
+
+    std::map<u_int8_t, int> frequency;
+    int count = 0;
+
+    auto index = pos;
+    while (index < data.size()) {
+        auto key = data[index];
+        if (frequency.count(key)){
+            frequency[key] = frequency[key] + 1;
+        }
+        else {
+            frequency[key] = 1;
+        }
+        count++;
+        index+=step;
+    }
+
+    auto cnt = [](int acc, std::pair<u_int8_t, int> pair) {
+        int ch = pair.first;
+
+        if (isblank(ch) || isalpha(ch) || isdigit(ch) || ch=='.') {
+            return acc + pair.second;
+        } else {
+            return acc;
+        }
+    };
+
+    // Check that at least 90% of characters are alphanumeric or punctuation
+    auto alpha_chars = std::accumulate(frequency.begin(), frequency.end(), 0, cnt);
+
+    if (alpha_chars < count * 0.9) {
+        return false;
+    }
+
+    for (auto pair : frequency) {
+        frequency[pair.first] = pair.second * 100 / count;
+    }
+
+    if (!frequency.count('e') || frequency['e'] < 8) {
+        return false;
+    }
+
+    if (!frequency.count('t') || frequency['t'] < 5) {
+        return false;
+    }
+    if (!frequency.count('a') || frequency['a'] < 3) {
+        return false;
+    }
+
+    if (!frequency.count('o') || frequency['o'] < 3) {
+        return false;
+    }
+
+    return true;
 }
 
 
