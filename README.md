@@ -10,3 +10,4 @@ Technologies
 * Problem 27 - Sieve of Eratosthenes algorithm.
 * Problem 42 - std::count_if and std::accumulate examples.
 * Problem 46 - test if number is a perfect square.
+* Problem 64 - Julia, Jupyter notebook, LaTeX.
